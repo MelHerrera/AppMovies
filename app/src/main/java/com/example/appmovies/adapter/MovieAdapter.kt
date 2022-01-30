@@ -12,13 +12,11 @@ import com.example.appmovies.services.Utils
 import com.example.appmovies.services.Utils.Companion.fromUrl
 import com.example.appmovies.services.Utils.Companion.getCompleteMovieImagePath
 
-class PopularMoviesAdapter(private val movies: ArrayList<ResponseMovie>): RecyclerView.Adapter<PopularMoviesAdapter.ViewHolder>()  {
+class PopularMoviesAdapter(private val movies: ArrayList<ResponseMovie>, private val itemViewReference:Int): RecyclerView.Adapter<PopularMoviesAdapter.ViewHolder>()  {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_movie, parent, false
-            )
+            LayoutInflater.from(parent.context).inflate(itemViewReference, parent, false)
         )
     }
 

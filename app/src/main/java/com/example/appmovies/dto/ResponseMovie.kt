@@ -13,3 +13,9 @@ data class ResponsePopularMovies(
     @SerializedName("total_results") var totalResults:Int,
     @SerializedName("results") var results:ArrayList<ResponseMovie>
 )
+
+data class ResponseWatchingMovies(
+    @SerializedName("page") var page:Int,
+    @SerializedName("total_results") var totalResults:Int,
+    @SerializedName("results") var results:ArrayList<ResponseMovie>
+)

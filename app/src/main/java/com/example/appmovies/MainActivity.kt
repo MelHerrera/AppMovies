@@ -12,6 +12,7 @@ import com.example.appmovies.adapter.PopularMoviesAdapter
 import com.example.appmovies.databinding.ActivityMainBinding
 import com.example.appmovies.dto.ResponseMovie
 import com.example.appmovies.dto.ResponsePopularMovies
+import com.example.appmovies.dto.ResponseWatchingMovies
 import com.example.appmovies.network.ApiAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         getPopularMovies()
+        getWatchingNow()
     }
 
     private fun getPopularMovies(){
@@ -51,9 +53,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getWatchingNow(){
+        lateinit var apiResponse: Response<ResponseWatchingMovies>
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO)
+            {
+                try {
+                    apiResponse = ApiAdapter.apiClient.getWatchingMovies()
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(applicationContext, e.message, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+
+            if(apiResponse.isSuccessful && apiResponse.code() ==200 )
+                apiResponse.body()?.results?.let { mostrarWatchingMovies(it) }
+            else
+                Toast.makeText(applicationContext, apiResponse.message(), Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun mostrarPopularMovies(popularMovies:ArrayList<ResponseMovie>){
         val mLayoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false )
         binding.vRecyclerPopularMovies.layoutManager = mLayoutManager
-        binding.vRecyclerPopularMovies.adapter = PopularMoviesAdapter(popularMovies)
+        binding.vRecyclerPopularMovies.adapter = PopularMoviesAdapter(popularMovies, R.layout.item_movie)
+    }
+
+    private fun mostrarWatchingMovies(watchingMovies:ArrayList<ResponseMovie>){
+        val mLayoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false )
+        binding.vRecyclerWatchingMovies.layoutManager = mLayoutManager
+        binding.vRecyclerWatchingMovies.adapter = PopularMoviesAdapter(watchingMovies, R.layout.item_watchingmovie)
     }
 }
